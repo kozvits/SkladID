@@ -14,6 +14,12 @@ jobs:
         run: chmod +x ./gradlew || true
       - name: Check wrapper jar
         run: ls -la gradle/wrapper/ || echo "wrapper jar missing"
-      - name: Build (with timeout)
+      - name: Build (system gradle fallback)
         timeout-minutes: 10
-        run: bash ./gradlew assembleDebug --no-daemon
+        run: |
+          if [ -f gradle/wrapper/gradle-wrapper.jar ]; then
+            bash ./gradlew assembleDebug --no-daemon
+          else
+            echo "gradle-wrapper.jar missing — using system gradle"
+            gradle assembleDebug --no-daemon || echo "system gradle not available"
+          fi
