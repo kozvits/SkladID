@@ -16,7 +16,7 @@ android {
     buildFeatures { compose = true }
 }
 dependencies {
-    implementation("androidx.compose:compose-material3:1.7.0")
+    implementation("androidx.compose.material3:material3:1.7.0")
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
