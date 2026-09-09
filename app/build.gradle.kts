@@ -14,7 +14,6 @@ android {
         versionName = "1.0"
     }
     buildFeatures { compose = true }
-    composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }
 }
 dependencies {
     implementation("androidx.compose:compose-material3:1.7.0")

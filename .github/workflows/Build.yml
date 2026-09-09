@@ -10,16 +10,13 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Setup Gradle and cache
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew || true
-      - name: Check wrapper jar
-        run: ls -la gradle/wrapper/ || echo "wrapper jar missing"
-      - name: Build (system gradle fallback)
-        timeout-minutes: 10
-        run: |
-          if [ -f gradle/wrapper/gradle-wrapper.jar ]; then
-            bash ./gradlew assembleDebug --no-daemon
-          else
-            echo "gradle-wrapper.jar missing — using system gradle"
-            gradle assembleDebug --no-daemon || echo "system gradle not available"
-          fi
+
+      - name: Build
+        timeout-minutes: 20
+        run: bash ./gradlew assembleDebug --no-daemon

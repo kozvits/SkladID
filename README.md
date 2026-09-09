@@ -38,12 +38,13 @@ SkladID/
 
 ## Установка и сборка
 
-### 1. Установите Gradle Wrapper (если отсутствует `gradle-wrapper.jar`)
+### 1. Проверьте Gradle Wrapper
+
+`gradle/wrapper/gradle-wrapper.jar` уже включён в репозиторий. Если нужно восстановить его:
 
 ```bash
-mkdir -p gradle/wrapper
-curl -L -o gradle/wrapper/gradle-wrapper.jar https://services.gradle.org/distributions/gradle-8.9-bin.zip
-# Или скопируйте из установленного Gradle
+curl -L -o gradle/wrapper/gradle-wrapper.jar \
+  https://raw.githubusercontent.com/gradle/gradle/v8.9.0/gradle/wrapper/gradle-wrapper.jar
 ```
 
 ### 2. Сделайте `gradlew` исполняемым

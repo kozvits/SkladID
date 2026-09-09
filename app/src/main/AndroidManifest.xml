@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <application android:label="SkladID" android:theme="@style/Theme.AppCompat">
+    <application android:label="SkladID" android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
         </activity>
