@@ -33,7 +33,7 @@ if [ -n "$JAVA_HOME" ] && [ -x "$JAVA_HOME/bin/java" ]; then
   JAVACMD="$JAVA_HOME/bin/java"
 fi
 
-if [ -x "$APP_HOME/gradle/wrapper/gradle-wrapper.jar" ]; then
+if [ -f "$APP_HOME/gradle/wrapper/gradle-wrapper.jar" ]; then
   CLASSPATH="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"
 else
   $ECHO "Gradle wrapper jar not found at $APP_HOME/gradle/wrapper/gradle-wrapper.jar"
