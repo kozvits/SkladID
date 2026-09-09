@@ -12,5 +12,8 @@ jobs:
           distribution: 'temurin'
       - name: Make gradlew executable
         run: chmod +x ./gradlew || true
-      - name: Build
-        run: bash ./gradlew assembleDebug
+      - name: Check wrapper jar
+        run: ls -la gradle/wrapper/ || echo "wrapper jar missing"
+      - name: Build (with timeout)
+        timeout-minutes: 10
+        run: bash ./gradlew assembleDebug --no-daemon
