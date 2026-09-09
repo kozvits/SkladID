@@ -60,6 +60,8 @@ bash ./gradlew assembleDebug
 
 Или через CI (GitHub Actions): `.github/workflows/Build.yml` запускает сборку автоматически при пуше.
 
+> Примечание: сборка в CI может зависать (>10 мин) из-за загрузки Gradle дистрибутива. Для быстрой сборки используйте локально `bash ./gradlew assembleDebug` с уже загруженным `gradle-wrapper.jar` или системный `gradle`.
+
 ## OpenRouter интеграция
 
 - Выпадающий список моделей: `OpenRouterClient.fetchModels()`
