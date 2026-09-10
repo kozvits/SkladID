@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SkladID</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Главная</string>
+    <string name="nav_capture">Съёмка</string>
+    <string name="nav_settings">Настройки</string>
+
+    <!-- Home -->
+    <string name="home_title">Последние товары</string>
+    <string name="home_empty">Пока нет добавленных товаров</string>
+    <string name="home_fab_add">Добавить товар</string>
+
+    <!-- Capture -->
+    <string name="capture_title">Съёмка товара</string>
+    <string name="capture_photo_item">Сфотографировать товар</string>
+    <string name="capture_photo_tag">Сфотографировать бирку</string>
+    <string name="capture_retake">Переснять</string>
+    <string name="capture_confirm">Использовать снимок</string>
+    <string name="capture_permission_required">Нужен доступ к камере</string>
+
+    <!-- Recognition -->
+    <string name="recognition_title">Результат распознавания</string>
+    <string name="recognition_loading">Распознаём…</string>
+    <string name="recognition_barcode_found">Штрих-код: %1$s</string>
+    <string name="recognition_text_found">Распознанный текст: %1$s</string>
+    <string name="recognition_no_data">Данные не распознаны, используем ИИ</string>
+    <string name="recognition_field_name">Название</string>
+    <string name="recognition_field_manufacturer">Производитель</string>
+    <string name="recognition_field_category">Категория</string>
+    <string name="recognition_field_specs">Характеристики</string>
+    <string name="recognition_ai_error">Ошибка распознавания ИИ</string>
+    <string name="recognition_retry">Повторить</string>
+
+    <!-- Storage -->
+    <string name="storage_title">Адрес хранения</string>
+    <string name="storage_warehouse">Склад</string>
+    <string name="storage_rack">Стеллаж</string>
+    <string name="storage_shelf">Полка</string>
+    <string name="storage_cell">Ячейка</string>
+    <string name="storage_auto_suggest">Подобрать автоматически</string>
+    <string name="storage_no_db">База размещения не загружена</string>
+    <string name="storage_import">Импортировать JSON базу</string>
+
+    <!-- Label preview -->
+    <string name="label_preview_title">Предпросмотр этикетки</string>
+    <string name="label_edit_text">Изменить текст</string>
+    <string name="label_print">Печать</string>
+    <string name="label_printing">Печать…</string>
+    <string name="label_print_success">Этикетка напечатана</string>
+    <string name="label_print_error">Ошибка печати</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Настройки</string>
+    <string name="settings_api_key">API-ключ OpenRouter</string>
+    <string name="settings_api_key_hint">sk-or-...</string>
+    <string name="settings_model">Модель распознавания</string>
+    <string name="settings_refresh_models">Обновить модели</string>
+    <string name="settings_import_json">Импорт базы размещения (JSON)</string>
+    <string name="settings_printer_section">Принтер</string>
+    <string name="settings_printer_bluetooth">Bluetooth</string>
+    <string name="settings_printer_network">Сеть (TCP)</string>
+    <string name="settings_printer_ip">IP-адрес принтера</string>
+    <string name="settings_printer_port">Порт</string>
+    <string name="settings_printer_scan">Найти принтеры</string>
+    <string name="settings_label_size">Размер этикетки</string>
+    <string name="settings_label_width_mm">Ширина (мм)</string>
+    <string name="settings_label_height_mm">Высота (мм)</string>
+    <string name="settings_label_dpi">DPI принтера</string>
+    <string name="settings_saved">Сохранено</string>
+
+    <!-- Common -->
+    <string name="common_cancel">Отмена</string>
+    <string name="common_save">Сохранить</string>
+    <string name="common_next">Далее</string>
+    <string name="common_back">Назад</string>
+    <string name="common_error_generic">Что-то пошло не так</string>
+    <string name="common_ok">ОК</string>
+</resources>
