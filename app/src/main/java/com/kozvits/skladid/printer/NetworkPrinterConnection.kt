@@ -13,7 +13,7 @@ private const val CONNECT_TIMEOUT_MS = 5000
 class NetworkPrinterConnection @Inject constructor() {
 
     suspend fun send(ip: String, port: Int, data: ByteArray): Result<Unit> = withContext(Dispatchers.IO) {
-        runCatching {
+        runCatching<Unit> {
             require(ip.isNotBlank()) { "IP-адрес принтера не задан" }
             Socket().use { socket ->
                 socket.connect(InetSocketAddress(ip, port), CONNECT_TIMEOUT_MS)
