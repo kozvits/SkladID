@@ -14,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenu
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -155,6 +154,8 @@ private fun ModelDropdown(
                 .fillMaxWidth()
                 .menuAnchor()
         )
+        // ExposedDropdownMenu — член ExposedDropdownMenuBoxScope,
+        // поэтому импорт не нужен, вызов резолвится через receiver.
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             models.forEach { model ->
                 DropdownMenuItem(
