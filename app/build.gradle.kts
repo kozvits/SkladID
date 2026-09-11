@@ -95,6 +95,7 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // ML Kit
     implementation(libs.mlkit.barcode.scanning)
@@ -111,6 +112,8 @@ dependencies {
 
     // Permissions
     implementation(libs.accompanist.permissions)
+
+    // Hilt Navigation Compose already declared above with Hilt block.
 
     // Secure storage for API key + settings
     implementation(libs.androidx.security.crypto)
