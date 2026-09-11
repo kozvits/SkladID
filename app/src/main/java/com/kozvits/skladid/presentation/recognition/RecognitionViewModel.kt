@@ -37,17 +37,9 @@ class RecognitionViewModel @Inject constructor(
 
             val localResult = recognizeLocal(tagPhotoPath).getOrNull()
 
-            if (localResult != null && localResult.hasAnyData) {
-                _uiState.value = UiState.Success(
-                    RecognitionFields(
-                        barcode = localResult.barcode,
-                        recognizedText = localResult.recognizedText
-                    )
-                )
-                return@launch
-            }
-
-            // Nothing usable on-device (worn/blank tag) — fall back to cloud AI on the item photo.
+            // ML Kit only ever gives us a barcode and/or raw OCR text — never structured
+            // name/manufacturer/category/specs. Those always come from the AI call below;
+            // the local result is passed along purely as a hint to help the model.
             runCatching { imageBase64Encoder.encodeDownscaled(itemPhotoPath) }
                 .onSuccess { base64 ->
                     identifyWithAi(

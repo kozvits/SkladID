@@ -61,8 +61,8 @@ fun RecognitionScreen(
             is UiState.Success -> RecognitionForm(
                 initial = s.data,
                 modifier = Modifier.padding(padding),
-                onConfirm = { name, manufacturer, category, specs ->
-                    onConfirmed(name, manufacturer, category, specs, s.data.barcode, s.data.recognizedText)
+                onConfirm = { name, manufacturer, category, specs, barcode ->
+                    onConfirmed(name, manufacturer, category, specs, barcode, s.data.recognizedText)
                 }
             )
         }
@@ -73,12 +73,13 @@ fun RecognitionScreen(
 private fun RecognitionForm(
     initial: RecognitionFields,
     modifier: Modifier = Modifier,
-    onConfirm: (name: String, manufacturer: String, category: String, specs: String) -> Unit
+    onConfirm: (name: String, manufacturer: String, category: String, specs: String, barcode: String?) -> Unit
 ) {
     var name by remember(initial) { mutableStateOf(initial.name) }
     var manufacturer by remember(initial) { mutableStateOf(initial.manufacturer) }
     var category by remember(initial) { mutableStateOf(initial.category) }
     var specs by remember(initial) { mutableStateOf(initial.specs) }
+    var barcode by remember(initial) { mutableStateOf(initial.barcode.orEmpty()) }
 
     Column(
         modifier = modifier
@@ -87,12 +88,6 @@ private fun RecognitionForm(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        initial.barcode?.let {
-            Text(
-                stringResource(R.string.recognition_barcode_found, it),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
         initial.recognizedText?.let {
             Text(
                 stringResource(R.string.recognition_text_found, it),
@@ -125,9 +120,15 @@ private fun RecognitionForm(
             modifier = Modifier.fillMaxWidth(),
             minLines = 2
         )
+        OutlinedTextField(
+            value = barcode,
+            onValueChange = { barcode = it },
+            label = { Text(stringResource(R.string.recognition_field_barcode)) },
+            modifier = Modifier.fillMaxWidth()
+        )
 
         Button(
-            onClick = { onConfirm(name, manufacturer, category, specs) },
+            onClick = { onConfirm(name, manufacturer, category, specs, barcode.ifBlank { null }) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.common_next))

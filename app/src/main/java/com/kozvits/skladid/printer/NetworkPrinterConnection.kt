@@ -17,10 +17,9 @@ class NetworkPrinterConnection @Inject constructor() {
             require(ip.isNotBlank()) { "IP-адрес принтера не задан" }
             Socket().use { socket ->
                 socket.connect(InetSocketAddress(ip, port), CONNECT_TIMEOUT_MS)
-                socket.getOutputStream().apply {
-                    write(data)
-                    flush()
-                }
+                val out = socket.getOutputStream()
+                out.write(data)
+                out.flush()
             }
         }
     }

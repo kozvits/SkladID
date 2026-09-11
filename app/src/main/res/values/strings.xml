@@ -30,6 +30,7 @@
     <string name="recognition_field_manufacturer">Производитель</string>
     <string name="recognition_field_category">Категория</string>
     <string name="recognition_field_specs">Характеристики</string>
+    <string name="recognition_field_barcode">Штрих-код</string>
     <string name="recognition_ai_error">Ошибка распознавания ИИ</string>
     <string name="recognition_retry">Повторить</string>
 
