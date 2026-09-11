@@ -152,7 +152,9 @@ private fun LabeledDropdown(
                 .fillMaxWidth()
                 .menuAnchor()
         )
-        androidx.compose.material3.ExposedDropdownMenu(
+        // Вызов без FQN: ExposedDropdownMenu — член ExposedDropdownMenuBoxScope,
+        // резолвится через receiver текущей лямбды. Импорт не нужен.
+        ExposedDropdownMenu(
             expanded = expanded && enabled,
             onDismissRequest = { expanded = false }
         ) {
