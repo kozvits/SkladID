@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
-    <!-- All app HTTP(S) traffic (OpenRouter API) must use TLS.
-         Note: TSC network printing uses a raw java.net.Socket on TCP:9100,
-         which is NOT subject to this policy — NetworkSecurityConfig only
-         governs platform APIs like HttpsURLConnection/OkHttp/WebView, so no
-         cleartext exception is needed here for the printer. -->
-    <base-config cleartextTrafficPermitted="false" />
-</network-security-config>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<full-backup-content>
-    <!-- Exclude encrypted API-key prefs and Room DB from backup for security. -->
-    <exclude domain="sharedpref" path="secure_settings.preferences_pb" />
-    <exclude domain="database" path="skladid.db" />
-</full-backup-content>
