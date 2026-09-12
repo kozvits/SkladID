@@ -12,6 +12,7 @@ import com.kozvits.skladid.domain.repository.LabelSettings
 import com.kozvits.skladid.domain.repository.PrinterConnectionType
 import com.kozvits.skladid.domain.repository.PrinterSettings
 import com.kozvits.skladid.domain.repository.SettingsRepository
+import com.kozvits.skladid.domain.repository.TelegramSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +25,7 @@ private val Context.dataStore by preferencesDataStore(name = "skladid_settings")
 
 private const val ENCRYPTED_PREFS_NAME = "secure_settings"
 private const val KEY_API_KEY = "openrouter_api_key"
+private const val KEY_TELEGRAM_BOT_TOKEN = "telegram_bot_token"
 
 @Singleton
 class SettingsRepositoryImpl @Inject constructor(
@@ -99,6 +101,23 @@ class SettingsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getTelegramBotToken(): String? = withContext(Dispatchers.IO) {
+        encryptedPrefs.getString(KEY_TELEGRAM_BOT_TOKEN, null)
+    }
+
+    override suspend fun setTelegramBotToken(token: String) = withContext(Dispatchers.IO) {
+        encryptedPrefs.edit().putString(KEY_TELEGRAM_BOT_TOKEN, token).apply()
+    }
+
+    override fun observeTelegramSettings(): Flow<TelegramSettings> =
+        context.dataStore.data.map { prefs ->
+            TelegramSettings(chatId = prefs[Keys.TELEGRAM_CHAT_ID])
+        }
+
+    override suspend fun setTelegramChatId(chatId: String) {
+        context.dataStore.edit { prefs -> prefs[Keys.TELEGRAM_CHAT_ID] = chatId }
+    }
+
     private object Keys {
         val SELECTED_MODEL_ID = stringPreferencesKey("selected_model_id")
         val PRINTER_CONNECTION_TYPE = stringPreferencesKey("printer_connection_type")
@@ -109,5 +128,6 @@ class SettingsRepositoryImpl @Inject constructor(
         val LABEL_WIDTH_MM = stringPreferencesKey("label_width_mm")
         val LABEL_HEIGHT_MM = stringPreferencesKey("label_height_mm")
         val LABEL_DPI = intPreferencesKey("label_dpi")
+        val TELEGRAM_CHAT_ID = stringPreferencesKey("telegram_chat_id")
     }
 }

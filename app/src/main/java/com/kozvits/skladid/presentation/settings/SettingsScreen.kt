@@ -125,6 +125,29 @@ fun SettingsScreen(
                 onChanged = viewModel::updateLabelSettings
             )
 
+            HorizontalDivider()
+
+            // Telegram bot
+            Text(stringResource(R.string.settings_telegram_section), style = MaterialTheme.typography.titleMedium)
+            var botTokenFieldValue by remember(state.telegramBotToken) { mutableStateOf(state.telegramBotToken) }
+            var chatIdFieldValue by remember(state.telegramChatId) { mutableStateOf(state.telegramChatId) }
+            OutlinedTextField(
+                value = botTokenFieldValue,
+                onValueChange = { botTokenFieldValue = it; viewModel.onTelegramBotTokenChanged(it) },
+                label = { Text(stringResource(R.string.settings_telegram_bot_token)) },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = chatIdFieldValue,
+                onValueChange = { chatIdFieldValue = it; viewModel.onTelegramChatIdChanged(it) },
+                label = { Text(stringResource(R.string.settings_telegram_chat_id)) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Button(onClick = viewModel::saveTelegramSettings, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.common_save))
+            }
+
             if (state.savedMessageVisible) {
                 Text(stringResource(R.string.settings_saved), color = MaterialTheme.colorScheme.primary)
             }

@@ -14,6 +14,8 @@ import com.kozvits.skladid.printer.PrinterRepositoryImpl
 import com.kozvits.skladid.domain.repository.ProductRepository
 import com.kozvits.skladid.domain.repository.SettingsRepository
 import com.kozvits.skladid.domain.repository.WarehouseRepository
+import com.kozvits.skladid.domain.repository.TelegramRepository
+import com.kozvits.skladid.telegram.TelegramRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -51,4 +53,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindPrinterRepository(impl: PrinterRepositoryImpl): PrinterRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTelegramRepository(impl: TelegramRepositoryImpl): TelegramRepository
 }

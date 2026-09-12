@@ -18,11 +18,16 @@ import com.kozvits.skladid.domain.usecase.settings.SetApiKeyUseCase
 import com.kozvits.skladid.domain.usecase.settings.SetLabelSettingsUseCase
 import com.kozvits.skladid.domain.usecase.settings.SetPrinterSettingsUseCase
 import com.kozvits.skladid.domain.usecase.settings.SetSelectedModelIdUseCase
+import com.kozvits.skladid.domain.usecase.settings.GetTelegramBotTokenUseCase
+import com.kozvits.skladid.domain.usecase.settings.SetTelegramBotTokenUseCase
+import com.kozvits.skladid.domain.usecase.settings.ObserveTelegramSettingsUseCase
+import com.kozvits.skladid.domain.usecase.settings.SetTelegramChatIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,7 +42,9 @@ data class SettingsUiState(
     val pairedBluetoothDevices: List<BluetoothPrinterInfo> = emptyList(),
     val labelSettings: LabelSettings = LabelSettings(),
     val savedMessageVisible: Boolean = false,
-    val importMessage: String? = null
+    val importMessage: String? = null,
+    val telegramBotToken: String = "",
+    val telegramChatId: String = ""
 )
 
 @HiltViewModel
@@ -52,7 +59,11 @@ class SettingsViewModel @Inject constructor(
     private val listPairedBluetoothPrinters: ListPairedBluetoothPrintersUseCase,
     observeLabelSettings: ObserveLabelSettingsUseCase,
     private val setLabelSettings: SetLabelSettingsUseCase,
-    private val importWarehouseJsonUseCase: ImportWarehouseJsonUseCase
+    private val importWarehouseJsonUseCase: ImportWarehouseJsonUseCase,
+    private val getTelegramBotToken: GetTelegramBotTokenUseCase,
+    private val setTelegramBotToken: SetTelegramBotTokenUseCase,
+    private val observeTelegramSettings: ObserveTelegramSettingsUseCase,
+    private val setTelegramChatId: SetTelegramChatIdUseCase
 ) : ViewModel() {
 
     private val apiKeyState = MutableStateFlow("")
@@ -62,6 +73,8 @@ class SettingsViewModel @Inject constructor(
     private val pairedDevices = MutableStateFlow<List<BluetoothPrinterInfo>>(emptyList())
     private val savedMessageVisible = MutableStateFlow(false)
     private val importMessage = MutableStateFlow<String?>(null)
+    private val telegramBotTokenState = MutableStateFlow("")
+    private val telegramChatIdState = MutableStateFlow("")
 
     val uiState: StateFlow<SettingsUiState> = combine(
         apiKeyState,
@@ -73,7 +86,9 @@ class SettingsViewModel @Inject constructor(
         pairedDevices,
         observeLabelSettings(),
         savedMessageVisible,
-        importMessage
+        importMessage,
+        telegramBotTokenState,
+        telegramChatIdState
     ) { values ->
         @Suppress("UNCHECKED_CAST")
         SettingsUiState(
@@ -86,12 +101,18 @@ class SettingsViewModel @Inject constructor(
             pairedBluetoothDevices = values[6] as List<BluetoothPrinterInfo>,
             labelSettings = values[7] as LabelSettings,
             savedMessageVisible = values[8] as Boolean,
-            importMessage = values[9] as String?
+            importMessage = values[9] as String?,
+            telegramBotToken = values[10] as String,
+            telegramChatId = values[11] as String
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingsUiState())
 
     init {
         viewModelScope.launch { apiKeyState.value = getApiKey().orEmpty() }
+        viewModelScope.launch { telegramBotTokenState.value = getTelegramBotToken().orEmpty() }
+        viewModelScope.launch {
+            telegramChatIdState.value = observeTelegramSettings().first().chatId.orEmpty()
+        }
         refreshPairedBluetoothDevices()
     }
 
@@ -148,6 +169,22 @@ class SettingsViewModel @Inject constructor(
                 .onFailure { importMessage.value = it.message ?: "Ошибка импорта" }
             kotlinx.coroutines.delay(2000)
             importMessage.value = null
+        }
+    }
+
+    fun onTelegramBotTokenChanged(value: String) {
+        telegramBotTokenState.value = value
+    }
+
+    fun onTelegramChatIdChanged(value: String) {
+        telegramChatIdState.value = value
+    }
+
+    fun saveTelegramSettings() {
+        viewModelScope.launch {
+            setTelegramBotToken(telegramBotTokenState.value)
+            setTelegramChatId(telegramChatIdState.value)
+            flashSaved()
         }
     }
 

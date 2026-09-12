@@ -12,6 +12,9 @@
     <string name="home_empty">Пока нет добавленных товаров</string>
     <string name="home_fab_add">Добавить товар</string>
     <string name="home_print_label">Печать этикетки</string>
+    <string name="home_send_telegram">Отправить в Telegram</string>
+    <string name="home_telegram_sending">Отправка в Telegram…</string>
+    <string name="home_telegram_success">Отправлено в Telegram</string>
 
     <!-- Capture -->
     <string name="capture_title">Съёмка товара</string>
@@ -71,6 +74,9 @@
     <string name="settings_label_height_mm">Высота (мм)</string>
     <string name="settings_label_dpi">DPI принтера</string>
     <string name="settings_saved">Сохранено</string>
+    <string name="settings_telegram_section">Telegram-бот</string>
+    <string name="settings_telegram_bot_token">Bot Token</string>
+    <string name="settings_telegram_chat_id">Chat ID</string>
 
     <!-- Common -->
     <string name="common_cancel">Отмена</string>

@@ -17,18 +17,23 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,8 +41,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.size
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kozvits.skladid.R
 import com.kozvits.skladid.domain.model.Product
@@ -54,12 +61,43 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    val telegramStatus by viewModel.telegramStatus.collectAsState()
+    val telegramError by viewModel.telegramError.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
+    LaunchedEffect(telegramStatus) {
+        when (telegramStatus) {
+            TelegramSendStatus.SUCCESS -> {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(R.string.home_telegram_success)
+                )
+                viewModel.dismissTelegramStatus()
+            }
+            TelegramSendStatus.ERROR -> {
+                snackbarHostState.showSnackbar(message = telegramError ?: "Ошибка отправки в Telegram")
+                viewModel.dismissTelegramStatus()
+            }
+            else -> Unit
+        }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.home_title)) },
                 actions = {
+                    IconButton(
+                        onClick = viewModel::sendToTelegram,
+                        enabled = telegramStatus != TelegramSendStatus.SENDING
+                    ) {
+                        if (telegramStatus == TelegramSendStatus.SENDING) {
+                            CircularProgressIndicator(modifier = Modifier.size(20.dp))
+                        } else {
+                            Icon(Icons.Filled.Send, contentDescription = stringResource(R.string.home_send_telegram))
+                        }
+                    }
                     IconButton(onClick = onOpenSettings) {
                         Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.nav_settings))
                     }

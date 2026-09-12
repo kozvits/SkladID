@@ -18,6 +18,10 @@ data class LabelSettings(
     val dpi: Int = 203
 )
 
+data class TelegramSettings(
+    val chatId: String? = null
+)
+
 interface SettingsRepository {
     // API key is stored via EncryptedSharedPreferences — never exposed as plain Flow to avoid
     // accidental logging; read is a one-shot suspend call.
@@ -32,4 +36,11 @@ interface SettingsRepository {
 
     fun observeLabelSettings(): Flow<LabelSettings>
     suspend fun setLabelSettings(settings: LabelSettings)
+
+    // Telegram bot token is a credential like the API key — encrypted, one-shot read only.
+    suspend fun getTelegramBotToken(): String?
+    suspend fun setTelegramBotToken(token: String)
+
+    fun observeTelegramSettings(): Flow<TelegramSettings>
+    suspend fun setTelegramChatId(chatId: String)
 }
