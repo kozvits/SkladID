@@ -14,6 +14,8 @@ data class ProductEntity(
     val recognizedText: String?,
     val itemPhotoPath: String?,
     val tagPhotoPath: String?,
+    val quantity: Double = 1.0,
+    val unit: String = "PIECE",
     val warehouse: String,
     val rack: String,
     val shelf: String,

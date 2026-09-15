@@ -26,6 +26,8 @@ class ProductExportFormatter @Inject constructor() {
                     category = p.category,
                     specs = p.specs,
                     barcode = p.barcode,
+                    quantity = p.quantity,
+                    unit = p.unit.name,
                     warehouse = p.storageAddress.warehouse,
                     rack = p.storageAddress.rack,
                     shelf = p.storageAddress.shelf,
@@ -49,6 +51,7 @@ class ProductExportFormatter @Inject constructor() {
                 if (p.category.isNotBlank()) appendLine("Категория: ${p.category}")
                 if (p.specs.isNotBlank()) appendLine("Характеристики: ${p.specs}")
                 if (!p.barcode.isNullOrBlank()) appendLine("Штрих-код: ${p.barcode}")
+                appendLine("Количество: ${formatQuantity(p.quantity)} ${p.unit.displayLabel}")
 
                 val address = p.storageAddress
                 if (listOf(address.warehouse, address.rack, address.shelf, address.cell).any { it.isNotBlank() }) {
@@ -74,4 +77,8 @@ class ProductExportFormatter @Inject constructor() {
         if (current.isNotEmpty()) chunks += current.toString().trim()
         return chunks
     }
+
+    /** Formats a quantity without a trailing ".0" for whole numbers, e.g. 2.0 -> "2", 2.5 -> "2.5". */
+    private fun formatQuantity(value: Double): String =
+        if (value == value.toLong().toDouble()) value.toLong().toString() else value.toString()
 }

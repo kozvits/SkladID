@@ -10,6 +10,8 @@ data class Product(
     val recognizedText: String? = null,
     val itemPhotoPath: String? = null,
     val tagPhotoPath: String? = null,
+    val quantity: Double = 1.0,
+    val unit: QuantityUnit = QuantityUnit.DEFAULT,
     val storageAddress: StorageAddress,
     val createdAtEpochMillis: Long
 )

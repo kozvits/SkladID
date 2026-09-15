@@ -50,17 +50,19 @@ fun SkladNavHost(navController: NavHostController = rememberNavController()) {
             RecognitionScreen(
                 itemPhotoPath = draft.itemPhotoPath.orEmpty(),
                 tagPhotoPath = draft.tagPhotoPath.orEmpty(),
-                onSave = { name, manufacturer, category, specs, barcode, recognizedText ->
+                onSave = { name, manufacturer, category, specs, barcode, recognizedText, quantity, unit ->
                     draftViewModel.setProductFields(name, manufacturer, category, specs)
                     draftViewModel.setRecognition(barcode, recognizedText)
+                    draftViewModel.setQuantity(quantity, unit)
                     draftViewModel.saveDraftAsProduct(
                         onSaved = { navController.popBackStack(Screen.Home.route, inclusive = false) },
                         onError = { /* validation errors here are limited to a blank name */ }
                     )
                 },
-                onConfirmed = { name, manufacturer, category, specs, barcode, recognizedText ->
+                onConfirmed = { name, manufacturer, category, specs, barcode, recognizedText, quantity, unit ->
                     draftViewModel.setProductFields(name, manufacturer, category, specs)
                     draftViewModel.setRecognition(barcode, recognizedText)
+                    draftViewModel.setQuantity(quantity, unit)
                     navController.navigate(Screen.Storage.route)
                 }
             )

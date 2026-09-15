@@ -3,6 +3,7 @@ package com.kozvits.skladid.presentation.navigation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kozvits.skladid.domain.model.Product
+import com.kozvits.skladid.domain.model.QuantityUnit
 import com.kozvits.skladid.domain.model.StorageAddress
 import com.kozvits.skladid.domain.usecase.product.SaveProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,8 @@ data class ProductDraft(
     val specs: String = "",
     val barcode: String? = null,
     val recognizedText: String? = null,
+    val quantity: Double = 1.0,
+    val unit: QuantityUnit = QuantityUnit.DEFAULT,
     val storageAddress: StorageAddress = StorageAddress.EMPTY
 ) {
     fun toProduct(): Product = Product(
@@ -32,6 +35,8 @@ data class ProductDraft(
         recognizedText = recognizedText,
         itemPhotoPath = itemPhotoPath,
         tagPhotoPath = tagPhotoPath,
+        quantity = quantity,
+        unit = unit,
         storageAddress = storageAddress,
         createdAtEpochMillis = System.currentTimeMillis()
     )
@@ -57,6 +62,10 @@ class ProductDraftViewModel @Inject constructor(
         _draft.update {
             it.copy(name = name, manufacturer = manufacturer, category = category, specs = specs)
         }
+    }
+
+    fun setQuantity(quantity: Double, unit: QuantityUnit) {
+        _draft.update { it.copy(quantity = quantity, unit = unit) }
     }
 
     fun setStorageAddress(address: StorageAddress) {
