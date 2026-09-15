@@ -48,9 +48,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kozvits.skladid.R
 import com.kozvits.skladid.domain.model.Product
+import com.kozvits.skladid.domain.model.QuantityUnit
 import com.kozvits.skladid.presentation.common.ErrorState
 import com.kozvits.skladid.presentation.common.FullScreenLoading
+import com.kozvits.skladid.presentation.common.QuantityUnitPicker
 import com.kozvits.skladid.presentation.common.UiState
+import com.kozvits.skladid.presentation.common.formatQuantity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -117,6 +120,7 @@ fun HomeScreen(
                 products = s.data,
                 onDelete = viewModel::onDelete,
                 onPrintLabel = onPrintLabel,
+                onQuantityChange = viewModel::updateQuantity,
                 paddingValues = padding
             )
         }
@@ -128,6 +132,7 @@ private fun ProductList(
     products: List<Product>,
     onDelete: (Long) -> Unit,
     onPrintLabel: (Long) -> Unit,
+    onQuantityChange: (Product, Double, QuantityUnit) -> Unit,
     paddingValues: PaddingValues
 ) {
     if (products.isEmpty()) {
@@ -153,14 +158,20 @@ private fun ProductList(
             ProductRow(
                 product = product,
                 onDelete = { onDelete(product.id) },
-                onPrintLabel = { onPrintLabel(product.id) }
+                onPrintLabel = { onPrintLabel(product.id) },
+                onQuantityChange = { quantity, unit -> onQuantityChange(product, quantity, unit) }
             )
         }
     }
 }
 
 @Composable
-private fun ProductRow(product: Product, onDelete: () -> Unit, onPrintLabel: () -> Unit) {
+private fun ProductRow(
+    product: Product,
+    onDelete: () -> Unit,
+    onPrintLabel: () -> Unit,
+    onQuantityChange: (Double, QuantityUnit) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
 
     Card(
@@ -173,7 +184,10 @@ private fun ProductRow(product: Product, onDelete: () -> Unit, onPrintLabel: () 
             Row(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(product.name, style = MaterialTheme.typography.titleMedium)
-                    Text(product.manufacturer, style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        "${product.manufacturer}  ·  ${formatQuantity(product.quantity)} ${product.unit.displayLabel}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
                 IconButton(onClick = onDelete) {
                     Icon(Icons.Filled.Delete, contentDescription = null)
@@ -200,6 +214,28 @@ private fun ProductRow(product: Product, onDelete: () -> Unit, onPrintLabel: () 
                     LabeledValue(
                         stringResource(R.string.recognition_field_barcode),
                         product.barcode.orEmpty()
+                    )
+
+                    var quantityText by remember(product.id, product.quantity) {
+                        mutableStateOf(formatQuantity(product.quantity))
+                    }
+                    var unit by remember(product.id, product.unit) { mutableStateOf(product.unit) }
+
+                    QuantityUnitPicker(
+                        quantityText = quantityText,
+                        onQuantityTextChange = { value ->
+                            quantityText = value
+                            value.toDoubleOrNull()?.takeIf { it > 0 }?.let { onQuantityChange(it, unit) }
+                        },
+                        unit = unit,
+                        onUnitChange = { selected ->
+                            unit = selected
+                            val quantity = quantityText.toDoubleOrNull()?.takeIf { it > 0 } ?: product.quantity
+                            onQuantityChange(quantity, selected)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp)
                     )
 
                     Button(

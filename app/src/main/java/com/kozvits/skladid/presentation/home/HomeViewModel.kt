@@ -3,8 +3,10 @@ package com.kozvits.skladid.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kozvits.skladid.domain.model.Product
+import com.kozvits.skladid.domain.model.QuantityUnit
 import com.kozvits.skladid.domain.usecase.product.DeleteProductUseCase
 import com.kozvits.skladid.domain.usecase.product.ObserveRecentProductsUseCase
+import com.kozvits.skladid.domain.usecase.product.SaveProductUseCase
 import com.kozvits.skladid.domain.usecase.telegram.SendProductsToTelegramUseCase
 import com.kozvits.skladid.presentation.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +25,8 @@ enum class TelegramSendStatus { IDLE, SENDING, SUCCESS, ERROR }
 class HomeViewModel @Inject constructor(
     observeRecentProducts: ObserveRecentProductsUseCase,
     private val deleteProduct: DeleteProductUseCase,
-    private val sendProductsToTelegram: SendProductsToTelegramUseCase
+    private val sendProductsToTelegram: SendProductsToTelegramUseCase,
+    private val saveProduct: SaveProductUseCase
 ) : ViewModel() {
 
     private val productsFlow = observeRecentProducts()
@@ -41,6 +44,13 @@ class HomeViewModel @Inject constructor(
 
     fun onDelete(id: Long) {
         viewModelScope.launch { deleteProduct(id) }
+    }
+
+    /** Updates quantity/unit for an already-saved product in place (edited from the expanded card). */
+    fun updateQuantity(product: Product, quantity: Double, unit: QuantityUnit) {
+        viewModelScope.launch {
+            saveProduct(product.copy(quantity = quantity, unit = unit))
+        }
     }
 
     fun sendToTelegram() {

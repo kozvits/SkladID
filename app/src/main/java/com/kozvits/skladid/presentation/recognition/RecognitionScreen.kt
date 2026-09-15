@@ -27,17 +27,38 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kozvits.skladid.R
+import com.kozvits.skladid.domain.model.QuantityUnit
 import com.kozvits.skladid.presentation.common.ErrorState
 import com.kozvits.skladid.presentation.common.FullScreenLoading
+import com.kozvits.skladid.presentation.common.QuantityUnitPicker
 import com.kozvits.skladid.presentation.common.UiState
+import com.kozvits.skladid.presentation.common.formatQuantity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecognitionScreen(
     itemPhotoPath: String,
     tagPhotoPath: String,
-    onConfirmed: (name: String, manufacturer: String, category: String, specs: String, barcode: String?, recognizedText: String?) -> Unit,
-    onSave: (name: String, manufacturer: String, category: String, specs: String, barcode: String?, recognizedText: String?) -> Unit,
+    onConfirmed: (
+        name: String,
+        manufacturer: String,
+        category: String,
+        specs: String,
+        barcode: String?,
+        recognizedText: String?,
+        quantity: Double,
+        unit: QuantityUnit
+    ) -> Unit,
+    onSave: (
+        name: String,
+        manufacturer: String,
+        category: String,
+        specs: String,
+        barcode: String?,
+        recognizedText: String?,
+        quantity: Double,
+        unit: QuantityUnit
+    ) -> Unit,
     viewModel: RecognitionViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -63,11 +84,11 @@ fun RecognitionScreen(
             is UiState.Success -> RecognitionForm(
                 initial = s.data,
                 modifier = Modifier.padding(padding),
-                onSave = { name, manufacturer, category, specs, barcode ->
-                    onSave(name, manufacturer, category, specs, barcode, s.data.recognizedText)
+                onSave = { name, manufacturer, category, specs, barcode, quantity, unit ->
+                    onSave(name, manufacturer, category, specs, barcode, s.data.recognizedText, quantity, unit)
                 },
-                onConfirm = { name, manufacturer, category, specs, barcode ->
-                    onConfirmed(name, manufacturer, category, specs, barcode, s.data.recognizedText)
+                onConfirm = { name, manufacturer, category, specs, barcode, quantity, unit ->
+                    onConfirmed(name, manufacturer, category, specs, barcode, s.data.recognizedText, quantity, unit)
                 }
             )
         }
@@ -78,14 +99,34 @@ fun RecognitionScreen(
 private fun RecognitionForm(
     initial: RecognitionFields,
     modifier: Modifier = Modifier,
-    onSave: (name: String, manufacturer: String, category: String, specs: String, barcode: String?) -> Unit,
-    onConfirm: (name: String, manufacturer: String, category: String, specs: String, barcode: String?) -> Unit
+    onSave: (
+        name: String,
+        manufacturer: String,
+        category: String,
+        specs: String,
+        barcode: String?,
+        quantity: Double,
+        unit: QuantityUnit
+    ) -> Unit,
+    onConfirm: (
+        name: String,
+        manufacturer: String,
+        category: String,
+        specs: String,
+        barcode: String?,
+        quantity: Double,
+        unit: QuantityUnit
+    ) -> Unit
 ) {
     var name by remember(initial) { mutableStateOf(initial.name) }
     var manufacturer by remember(initial) { mutableStateOf(initial.manufacturer) }
     var category by remember(initial) { mutableStateOf(initial.category) }
     var specs by remember(initial) { mutableStateOf(initial.specs) }
     var barcode by remember(initial) { mutableStateOf(initial.barcode.orEmpty()) }
+    var quantityText by remember(initial) { mutableStateOf(formatQuantity(1.0)) }
+    var unit by remember(initial) { mutableStateOf(QuantityUnit.DEFAULT) }
+
+    fun currentQuantity(): Double = quantityText.toDoubleOrNull()?.takeIf { it > 0 } ?: 1.0
 
     Column(
         modifier = modifier
@@ -132,16 +173,27 @@ private fun RecognitionForm(
             label = { Text(stringResource(R.string.recognition_field_barcode)) },
             modifier = Modifier.fillMaxWidth()
         )
+        QuantityUnitPicker(
+            quantityText = quantityText,
+            onQuantityTextChange = { quantityText = it },
+            unit = unit,
+            onUnitChange = { unit = it },
+            modifier = Modifier.fillMaxWidth()
+        )
 
         OutlinedButton(
-            onClick = { onSave(name, manufacturer, category, specs, barcode.ifBlank { null }) },
+            onClick = {
+                onSave(name, manufacturer, category, specs, barcode.ifBlank { null }, currentQuantity(), unit)
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.common_save))
         }
 
         Button(
-            onClick = { onConfirm(name, manufacturer, category, specs, barcode.ifBlank { null }) },
+            onClick = {
+                onConfirm(name, manufacturer, category, specs, barcode.ifBlank { null }, currentQuantity(), unit)
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.common_next))

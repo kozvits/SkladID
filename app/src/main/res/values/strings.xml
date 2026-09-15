@@ -35,6 +35,8 @@
     <string name="recognition_field_category">Категория</string>
     <string name="recognition_field_specs">Характеристики</string>
     <string name="recognition_field_barcode">Штрих-код</string>
+    <string name="recognition_field_quantity">Количество</string>
+    <string name="recognition_field_unit">Ед. измерения</string>
     <string name="recognition_ai_error">Ошибка распознавания ИИ</string>
     <string name="recognition_retry">Повторить</string>
 

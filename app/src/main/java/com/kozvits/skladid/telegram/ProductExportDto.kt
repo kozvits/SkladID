@@ -16,6 +16,8 @@ data class ProductExportDto(
     val category: String,
     val specs: String,
     val barcode: String? = null,
+    val quantity: Double,
+    val unit: String,
     val warehouse: String,
     val rack: String,
     val shelf: String,
