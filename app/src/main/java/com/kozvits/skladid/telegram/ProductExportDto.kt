@@ -15,6 +15,7 @@ data class ProductExportDto(
     val manufacturer: String,
     val category: String,
     val specs: String,
+    val applicability: String = "",
     val barcode: String? = null,
     val quantity: Double,
     val unit: String,

@@ -57,5 +57,6 @@ data class ProductGuessDto(
     val name: String = "",
     val manufacturer: String = "",
     val category: String = "",
-    val specs: String = ""
+    val specs: String = "",
+    val applicability: String = ""
 )

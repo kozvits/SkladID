@@ -10,6 +10,7 @@ data class ProductEntity(
     val manufacturer: String,
     val category: String,
     val specs: String,
+    val applicability: String = "",
     val barcode: String?,
     val recognizedText: String?,
     val itemPhotoPath: String?,

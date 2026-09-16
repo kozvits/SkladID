@@ -13,7 +13,8 @@ data class AiProductGuess(
     val name: String,
     val manufacturer: String,
     val category: String,
-    val specs: String
+    val specs: String,
+    val applicability: String
 )
 
 /** A vision-capable model available on OpenRouter, for the model picker in Settings. */

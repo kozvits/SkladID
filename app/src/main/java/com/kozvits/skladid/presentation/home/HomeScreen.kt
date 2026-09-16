@@ -211,10 +211,17 @@ private fun ProductRow(
                     LabeledValue(stringResource(R.string.recognition_field_manufacturer), product.manufacturer)
                     LabeledValue(stringResource(R.string.recognition_field_category), product.category)
                     LabeledValue(stringResource(R.string.recognition_field_specs), product.specs)
+                    LabeledValue(stringResource(R.string.recognition_field_applicability), product.applicability)
                     LabeledValue(
                         stringResource(R.string.recognition_field_barcode),
                         product.barcode.orEmpty()
                     )
+                    if (product.storageAddress.rack.isNotBlank()) {
+                        LabeledValue(stringResource(R.string.recognition_field_rack), product.storageAddress.rack)
+                    }
+                    if (product.storageAddress.cell.isNotBlank()) {
+                        LabeledValue(stringResource(R.string.recognition_field_cell), product.storageAddress.cell)
+                    }
 
                     var quantityText by remember(product.id, product.quantity) {
                         mutableStateOf(formatQuantity(product.quantity))
@@ -248,23 +255,24 @@ private fun ProductRow(
                     }
                 }
             } else {
-                val hasAddress = listOf(
-                    product.storageAddress.warehouse,
-                    product.storageAddress.rack,
-                    product.storageAddress.shelf,
-                    product.storageAddress.cell
-                ).any { it.isNotBlank() }
-
-                if (hasAddress) {
-                    Text(
-                        "${product.storageAddress.warehouse} / ${product.storageAddress.rack} / " +
-                            "${product.storageAddress.shelf} / ${product.storageAddress.cell}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                val addressSummary = formatStorageSummary(product.storageAddress)
+                if (addressSummary != null) {
+                    Text(addressSummary, style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }
     }
+}
+
+/** Builds a compact "Label: value" summary from whichever storage-address parts are set. */
+private fun formatStorageSummary(address: com.kozvits.skladid.domain.model.StorageAddress): String? {
+    val parts = buildList {
+        if (address.warehouse.isNotBlank()) add("Склад ${address.warehouse}")
+        if (address.rack.isNotBlank()) add("Стеллаж ${address.rack}")
+        if (address.shelf.isNotBlank()) add("Полка ${address.shelf}")
+        if (address.cell.isNotBlank()) add("Ячейка ${address.cell}")
+    }
+    return parts.takeIf { it.isNotEmpty() }?.joinToString(" · ")
 }
 
 @Composable

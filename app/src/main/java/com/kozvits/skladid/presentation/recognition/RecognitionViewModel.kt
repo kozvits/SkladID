@@ -17,6 +17,7 @@ data class RecognitionFields(
     val manufacturer: String = "",
     val category: String = "",
     val specs: String = "",
+    val applicability: String = "",
     val barcode: String? = null,
     val recognizedText: String? = null
 )
@@ -53,6 +54,7 @@ class RecognitionViewModel @Inject constructor(
                                 manufacturer = guess.manufacturer,
                                 category = guess.category,
                                 specs = guess.specs,
+                                applicability = guess.applicability,
                                 barcode = localResult?.barcode,
                                 recognizedText = localResult?.recognizedText
                             )

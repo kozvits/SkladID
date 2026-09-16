@@ -122,7 +122,8 @@ class OpenRouterApiClient @Inject constructor(
                 name = guessDto.name,
                 manufacturer = guessDto.manufacturer,
                 category = guessDto.category,
-                specs = guessDto.specs
+                specs = guessDto.specs,
+                applicability = guessDto.applicability
             )
         }
     }
@@ -138,8 +139,16 @@ class OpenRouterApiClient @Inject constructor(
         }
         return """
             Определи товар по фотографии. $hints
+            Правила заполнения полей:
+            - "name" (Название) и "category" (Категория) — на русском языке. Если на бирке/этикетке
+              название или категория указаны также на другом языке, укажи оба варианта через "/"
+              (например: "Дрель ударная/Impact Drill").
+            - "specs" (Характеристики) — на языке бирки/этикетки, если она есть на фото; если бирки
+              или текста на товаре нет, опиши характеристики на русском языке.
+            - "applicability" (Применимость) — краткое описание, где применяется товар (например,
+              техника, оборудование, отрасль), на русском языке.
             Верни СТРОГО JSON без пояснений и без markdown, в формате:
-            {"name": "...", "manufacturer": "...", "category": "...", "specs": "..."}
+            {"name": "...", "manufacturer": "...", "category": "...", "specs": "...", "applicability": "..."}
         """.trimIndent()
     }
 

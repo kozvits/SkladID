@@ -25,6 +25,7 @@ class ProductExportFormatter @Inject constructor() {
                     manufacturer = p.manufacturer,
                     category = p.category,
                     specs = p.specs,
+                    applicability = p.applicability,
                     barcode = p.barcode,
                     quantity = p.quantity,
                     unit = p.unit.name,
@@ -50,12 +51,19 @@ class ProductExportFormatter @Inject constructor() {
                 if (p.manufacturer.isNotBlank()) appendLine("Производитель: ${p.manufacturer}")
                 if (p.category.isNotBlank()) appendLine("Категория: ${p.category}")
                 if (p.specs.isNotBlank()) appendLine("Характеристики: ${p.specs}")
+                if (p.applicability.isNotBlank()) appendLine("Применимость: ${p.applicability}")
                 if (!p.barcode.isNullOrBlank()) appendLine("Штрих-код: ${p.barcode}")
                 appendLine("Количество: ${formatQuantity(p.quantity)} ${p.unit.displayLabel}")
 
                 val address = p.storageAddress
-                if (listOf(address.warehouse, address.rack, address.shelf, address.cell).any { it.isNotBlank() }) {
-                    appendLine("Адрес: ${address.warehouse} / ${address.rack} / ${address.shelf} / ${address.cell}")
+                val addressParts = buildList {
+                    if (address.warehouse.isNotBlank()) add("Склад ${address.warehouse}")
+                    if (address.rack.isNotBlank()) add("Стеллаж ${address.rack}")
+                    if (address.shelf.isNotBlank()) add("Полка ${address.shelf}")
+                    if (address.cell.isNotBlank()) add("Ячейка ${address.cell}")
+                }
+                if (addressParts.isNotEmpty()) {
+                    appendLine("Адрес: ${addressParts.joinToString(", ")}")
                 }
             }
         }.trim()

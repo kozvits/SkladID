@@ -7,7 +7,7 @@ import com.kozvits.skladid.data.local.db.entity.ProductEntity
 
 @Database(
     entities = [ProductEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 abstract class SkladDatabase : RoomDatabase() {

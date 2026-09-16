@@ -6,6 +6,7 @@ data class Product(
     val manufacturer: String,
     val category: String,
     val specs: String,
+    val applicability: String = "",
     val barcode: String? = null,
     val recognizedText: String? = null,
     val itemPhotoPath: String? = null,

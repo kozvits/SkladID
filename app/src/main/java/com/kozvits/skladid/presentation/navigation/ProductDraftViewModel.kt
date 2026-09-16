@@ -6,6 +6,7 @@ import com.kozvits.skladid.domain.model.Product
 import com.kozvits.skladid.domain.model.QuantityUnit
 import com.kozvits.skladid.domain.model.StorageAddress
 import com.kozvits.skladid.domain.usecase.product.SaveProductUseCase
+import com.kozvits.skladid.presentation.recognition.RecognitionSubmission
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +21,7 @@ data class ProductDraft(
     val manufacturer: String = "",
     val category: String = "",
     val specs: String = "",
+    val applicability: String = "",
     val barcode: String? = null,
     val recognizedText: String? = null,
     val quantity: Double = 1.0,
@@ -31,6 +33,7 @@ data class ProductDraft(
         manufacturer = manufacturer,
         category = category,
         specs = specs,
+        applicability = applicability,
         barcode = barcode,
         recognizedText = recognizedText,
         itemPhotoPath = itemPhotoPath,
@@ -54,18 +57,22 @@ class ProductDraftViewModel @Inject constructor(
         _draft.update { it.copy(itemPhotoPath = itemPhotoPath, tagPhotoPath = tagPhotoPath) }
     }
 
-    fun setRecognition(barcode: String?, recognizedText: String?) {
-        _draft.update { it.copy(barcode = barcode, recognizedText = recognizedText) }
-    }
-
-    fun setProductFields(name: String, manufacturer: String, category: String, specs: String) {
+    /** Applies everything captured on the Recognition screen in one go. */
+    fun applyRecognitionSubmission(submission: RecognitionSubmission) {
         _draft.update {
-            it.copy(name = name, manufacturer = manufacturer, category = category, specs = specs)
+            it.copy(
+                name = submission.name,
+                manufacturer = submission.manufacturer,
+                category = submission.category,
+                specs = submission.specs,
+                applicability = submission.applicability,
+                barcode = submission.barcode,
+                recognizedText = submission.recognizedText,
+                quantity = submission.quantity,
+                unit = submission.unit,
+                storageAddress = it.storageAddress.copy(rack = submission.rack, cell = submission.cell)
+            )
         }
-    }
-
-    fun setQuantity(quantity: Double, unit: QuantityUnit) {
-        _draft.update { it.copy(quantity = quantity, unit = unit) }
     }
 
     fun setStorageAddress(address: StorageAddress) {

@@ -37,6 +37,9 @@
     <string name="recognition_field_barcode">Штрих-код</string>
     <string name="recognition_field_quantity">Количество</string>
     <string name="recognition_field_unit">Ед. измерения</string>
+    <string name="recognition_field_applicability">Применимость</string>
+    <string name="recognition_field_rack">Стеллаж</string>
+    <string name="recognition_field_cell">Ячейка</string>
     <string name="recognition_ai_error">Ошибка распознавания ИИ</string>
     <string name="recognition_retry">Повторить</string>
 
